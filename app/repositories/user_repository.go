@@ -32,7 +32,5 @@ func (userRepository *UserRepository) GetAllUsers() ([]models.User, error) {
 		users = append(users, user)
 	}
 
-	log.Println(users, "users")
-
 	return users, nil
 }

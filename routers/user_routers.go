@@ -5,8 +5,8 @@ import (
 	"demo/app/middleware"
 	"demo/app/repositories"
 	"demo/app/services"
+	"demo/app/utils"
 	"demo/database/mysql"
-	"demo/package/utils"
 
 	"github.com/gorilla/mux"
 )
