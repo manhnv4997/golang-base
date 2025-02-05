@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"demo/app/services"
-	"encoding/json"
+	"demo/app/utils"
 	"log"
 	"net/http"
 )
@@ -24,15 +24,10 @@ func (userController *UserController) GetAllUsers(response http.ResponseWriter, 
 		return
 	}
 
-	response.Header().Set("Content-Type", "application/json")
-	encodeErr := json.NewEncoder(response).Encode(map[string]interface{}{
-		"message": "✅ Thành công",
-		"result":  users,
-	})
+	encodeErr := utils.SuccessResponse(response, http.StatusOK, users)
 
 	if encodeErr != nil {
-		http.Error(response, "Lỗi encode json:", http.StatusInternalServerError)
-		log.Println("Lỗi encode json", encodeErr)
+		utils.ErrorResponse(response, http.StatusInternalServerError, "Lỗi encode json")
 		return
 	}
 }

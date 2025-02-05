@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"demo/app/utils"
 	"demo/database/mysql"
 	"demo/routers"
 )
@@ -15,6 +16,7 @@ func main() {
 	router := routers.SetupRoutes()
 
 	// Khởi động server
-	fmt.Println("🚀 Server đang chạy trên cổng 8080")
-	http.ListenAndServe(":8080", router)
+	serverAddress := ":" + utils.GetEnv("APP_PORT", "")
+	fmt.Println("🚀 Server đang chạy trên cổng " + serverAddress)
+	http.ListenAndServe(serverAddress, router)
 }

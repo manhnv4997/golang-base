@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -33,6 +34,7 @@ func SetupRoutes() *mux.Router {
 
 	// Xử lý 404
 	router.NotFoundHandler = http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+		log.Printf("📌 Request: %s %s | Status: %d", request.Method, request.URL.Path, http.StatusNotFound)
 		http.Error(response, "❌ Route không tồn tại", http.StatusNotFound)
 	})
 

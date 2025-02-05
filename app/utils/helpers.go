@@ -4,7 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 	"strings"
+
+	"github.com/joho/godotenv"
 )
 
 func Debug(rows *sql.Rows) {
@@ -71,4 +74,22 @@ func RoutePath(prefix string, path string) string {
 	fmt.Println(sb.String())
 
 	return sb.String()
+}
+
+func LoadEnv() {
+	envPath := "env/.env"
+
+	if err := godotenv.Load(envPath); err != nil {
+		log.Println("Không tìm thấy file .env hoặc lỗi khi tải.")
+	} else {
+		_ = godotenv.Load(envPath)
+	}
+}
+
+func GetEnv(key, defaultValue string) string {
+	if value, exists := os.LookupEnv(key); exists {
+		return value
+	}
+
+	return defaultValue
 }

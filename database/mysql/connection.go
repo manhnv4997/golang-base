@@ -12,9 +12,9 @@ var DB *sql.DB
 
 // Connect mở kết nối đến MySQL
 func Connect(user, password, host, port, dbname string) {
-	config := LoadConfig()
+	DBConfig := LoadDBConfig()
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=True", config.User, config.Password, config.Host, config.Port, config.DBName)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=True", DBConfig.User, DBConfig.Password, DBConfig.Host, DBConfig.Port, DBConfig.DBName)
 
 	var err error
 	DB, err = sql.Open("mysql", dsn)
@@ -24,7 +24,6 @@ func Connect(user, password, host, port, dbname string) {
 	}
 
 	// Kiểm tra kết nối
-
 	if err = DB.Ping(); err != nil {
 		log.Fatal("Không thể ping MySQL:", err)
 	}
