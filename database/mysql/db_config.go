@@ -13,7 +13,6 @@ type DBConfig struct {
 }
 
 func LoadDBConfig() DBConfig {
-	utils.LoadEnv()
 
 	return DBConfig{
 		User:     utils.GetEnv("DB_USER", "root"),

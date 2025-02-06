@@ -13,6 +13,7 @@ func ErrorResponse(response http.ResponseWriter, code int, message string) {
 	response.Header().Set("Content-Type", "application/json")
 	response.WriteHeader(code)
 	json.NewEncoder(response).Encode(MessageResponse{Message: message})
+	http.Error(response, message, code)
 }
 
 func SuccessResponse(response http.ResponseWriter, code int, data interface{}) error {

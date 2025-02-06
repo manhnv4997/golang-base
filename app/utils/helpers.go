@@ -65,7 +65,9 @@ func RoutePath(prefix string, path string) string {
 	var sb strings.Builder
 
 	sb.WriteString("/")
-	sb.WriteString(prefix)
+	if path != "" {
+		sb.WriteString(prefix)
+	}
 	if path != "" {
 		sb.WriteString("/")
 		sb.WriteString(path)

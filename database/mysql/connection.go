@@ -11,7 +11,7 @@ import (
 var DB *sql.DB
 
 // Connect mở kết nối đến MySQL
-func Connect(user, password, host, port, dbname string) {
+func Connect() {
 	DBConfig := LoadDBConfig()
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=True", DBConfig.User, DBConfig.Password, DBConfig.Host, DBConfig.Port, DBConfig.DBName)

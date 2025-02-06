@@ -30,6 +30,7 @@ func SetupRoutes() *mux.Router {
 	router := mux.NewRouter()
 
 	// Setup routes
+	router = SetupAppConfigurationRoutes(router)
 	router = SetupUserRoutes(router)
 
 	// Xử lý 404

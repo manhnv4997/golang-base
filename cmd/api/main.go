@@ -10,9 +10,14 @@ import (
 )
 
 func main() {
-	mysql.Connect("root", "", "127.0.0.1", "3306", "shopone")
-	defer mysql.Close()
+	// Tải env
+	utils.LoadEnv()
 
+	// Kết nối database
+	mysql.Connect()
+	defer mysql.Close() //  ngắt kết nối database
+
+	// Tải router
 	router := routers.SetupRoutes()
 
 	// Khởi động server
