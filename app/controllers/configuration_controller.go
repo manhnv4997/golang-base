@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-
-	"github.com/go-resty/resty/v2"
 )
 
 type ConfigurationController struct {
@@ -25,18 +23,6 @@ var (
 
 func NewConfigurationController(configurationService *services.ConfigurationService) *ConfigurationController {
 	return &ConfigurationController{ConfigurationService: configurationService}
-}
-
-func (configurationController *ConfigurationController) Handle(response http.ResponseWriter, request *http.Request) {
-	result, err := configurationController.ConfigurationService.Handle()
-
-	if err != nil {
-		log.Println(err, "err")
-		ErrorResponse(response, http.StatusInternalServerError, "Lỗi xử lý dữ liệu")
-		return
-	}
-
-	SuccessResponse(response, http.StatusOK, result)
 }
 
 func (configurationController *ConfigurationController) AuthHandler(response http.ResponseWriter, request *http.Request) {
@@ -74,10 +60,7 @@ func (configurationController *ConfigurationController) CallbackHandler(response
 	}
 
 	// Step3: Exchange authorization code for access token
-	body, err := getAccessToken(shop, code)
-
-	// In toàn bộ JSON nhận được
-	log.Println("Response Body:", body)
+	body, err := services.NewConfigurationService().GetAccessToken(shop, code)
 
 	// Parse JSON từ chuỗi
 	var bodyJson map[string]interface{}
@@ -99,46 +82,4 @@ func (configurationController *ConfigurationController) CallbackHandler(response
 	result := map[string]string{"shop": shop, "access_token": accessToken, "scope": scope}
 
 	SuccessResponse(response, http.StatusOK, result)
-}
-
-func getAccessToken(shop, code string) (string, error) {
-	client := resty.New()        // Tạo HTTP client
-	response, err := client.R(). // Tạo một request HTTP
-					SetHeader("Content-Type", "application/json").
-					SetBody(map[string]string{
-			"client_id":     shopifyAPIKey,
-			"client_secret": shopifyApiSecret,
-			"code":          code,
-		}).
-		Post(fmt.Sprintf("https://%s/admin/oauth/access_token?client_id=%s&client_secret=%s&code=%s", shop, shopifyAPIKey, shopifyApiSecret, code)) // Gửi request GET
-
-	if err != nil {
-		return "", err
-	}
-
-	// Trả về toàn bộ response.Body() dưới dạng chuỗi JSON
-	return string(response.Body()), nil
-}
-
-// Step 4: Use Access token to call shopify API
-func (configurationController *ConfigurationController) GetShopInfo(response http.ResponseWriter, request *http.Request) {
-	shop := request.URL.Query().Get("shop")
-	accessToken := request.URL.Query().Get("access_token")
-
-	if shop == "" || accessToken == "" {
-		http.Error(response, "Missing shop or access_token", http.StatusBadRequest)
-		return
-	}
-
-	client := resty.New()    // Tạo HTTP Client
-	resp, err := client.R(). // Tạo một request HTTP
-					SetAuthToken(accessToken).
-					Get(fmt.Sprintf("https://%s/admin/api/2023-04/shop.json", "shop"))
-
-	if err != nil {
-		http.Error(response, "Failed to fetch shop info", http.StatusInternalServerError)
-		return
-	}
-
-	response.Write(resp.Body())
 }

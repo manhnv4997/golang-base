@@ -8,8 +8,8 @@ import (
 type Controllers struct {
 }
 
-func SuccessResponse(response http.ResponseWriter, code int, message interface{}) {
-	encodeErr := utils.SuccessResponse(response, code, message)
+func SuccessResponse(response http.ResponseWriter, code int, data interface{}) {
+	encodeErr := utils.SuccessResponse(response, code, data)
 
 	if encodeErr != nil {
 		ErrorResponse(response, http.StatusInternalServerError, "Lỗi encode json")
