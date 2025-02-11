@@ -33,12 +33,16 @@ func (configurationController *ConfigurationController) AuthHandler(response htt
 		return
 	}
 
-	// https://a59a-14-160-24-42.ngrok-free.app/auth?shop=dungdinhnghe.myshopify.com
+	// https://7f39-14-191-163-181.ngrok-free.app/auth?shop=dungdinhnghe.myshopify.com
 	// https://dungdinhnghe.myshopify.com/admin/oauth/authorize?client_id=7611fb8cd65cee6430d670f19bf58c22&scope=read_orders,write_products&redirect_uri=https://a59a-14-160-24-42.ngrok-free.app/auth/callback
 	// https://dungdinhnghe.myshopify.com/admin/oauth/authorize?client_id=7611fb8cd65cee6430d670f19bf58c22&scope=read_orders,write_products&redirect_uri=https://a59a-14-160-24-42.ngrok-free.app/auth/callback&grant_options[]=per-user
 
+	// https://dungdinhnghe.myshopify.com/admin/api/2025-01/products.json?ids=632910392921728736
+
 	// Shopify OAuth URL
-	authURL := fmt.Sprintf("https://%s/admin/oauth/authorize?client_id=%s&scope=%s&redirect_uri=%s", shop, shopifyAPIKey, shopifyScopes, shopifyRedirectURI)
+	authURL := fmt.Sprintf("https://%s/admin/oauth/authorize?client_id=%s&scope=%s&redirect_uri=%s&state=%d", shop, shopifyAPIKey, shopifyScopes, shopifyRedirectURI, 123)
+
+	log.Println(authURL, "authURL")
 
 	http.Redirect(response, request, authURL, http.StatusFound)
 }

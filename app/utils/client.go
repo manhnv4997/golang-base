@@ -9,29 +9,29 @@ import (
 type Client struct{}
 
 var (
-	shopifyAPIKey      = GetEnv("SHOPIFY_API_KEY", "")
-	shopifyApiSecret   = GetEnv("SHOPIFY_API_SECRET", "")
-	shopifyRedirectURI = GetEnv("SHOPIFY_REDIRECT_URI", "")
-	shopifyScopes      = GetEnv("SHOPIFY_SCOPES", "")
+	accessToken = GetEnv("SHOPIFY_ACCESS_TOKEN", "")
 )
 
 func NewClient() *Client {
 	return &Client{}
 }
 
-func (client *Client) Get(response http.ResponseWriter, accessToken string, url string) (*resty.Response, error) {
+func (client *Client) Get(response http.ResponseWriter, url string) (*resty.Response, error) {
 	clt := resty.New()    // Tạo HTTP Client
 	resp, err := clt.R(). // Tạo một request HTTP
-				SetAuthToken(accessToken).
+				SetHeader("Content-Type", "application/json").
+				SetHeader("X-Shopify-Access-Token", accessToken).
 				Get(url)
 
 	return resp, err
 }
 
-func (client *Client) Post(url string, bodyData map[string]string) (*resty.Response, error) {
+// func (client *Client) Post(url string, bodyData map[string]string) (*resty.Response, error) {
+func (client *Client) Post(url string, bodyData interface{}) (*resty.Response, error) {
 	clt := resty.New()    // Tạo HTTP client
 	resp, err := clt.R(). // Tạo một request HTTP
 				SetHeader("Content-Type", "application/json").
+				SetHeader("X-Shopify-Access-Token", accessToken).
 				SetBody(bodyData).
 				Post(url) // Gửi request POST
 

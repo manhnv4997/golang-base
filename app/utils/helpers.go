@@ -1,17 +1,12 @@
 package utils
 
 import (
-	"crypto/hmac"
-	"crypto/sha256"
-	"crypto/subtle"
 	"database/sql"
-	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"log"
-	"net/url"
 	"os"
-	"sort"
-	"strings"
+	"reflect"
 
 	"github.com/joho/godotenv"
 )
@@ -67,23 +62,6 @@ func Debug(rows *sql.Rows) {
 	}
 }
 
-func RoutePath(prefix string, path string) string {
-	var sb strings.Builder
-
-	sb.WriteString("/")
-	if path != "" {
-		sb.WriteString(prefix)
-	}
-	if path != "" {
-		sb.WriteString("/")
-		sb.WriteString(path)
-	}
-
-	fmt.Println(sb.String())
-
-	return sb.String()
-}
-
 func LoadEnv() {
 	envPath := "env/.env"
 
@@ -104,43 +82,25 @@ func GetEnv(key, defaultValue string) string {
 	return defaultValue
 }
 
-func ValidateHMAC(query url.Values, shopifyApiSecret, receivedHMAC string) bool {
-	// 1. Tạo chuỗi truy vấn chuẩn hóa (canonical query string)
-	var keys []string
-	for key := range query {
-		keys = append(keys, key)
-	}
-	sort.Strings(keys)
+func Encode(data interface{}) string {
 
-	var params []string
-	for _, key := range keys {
-		if key == "hmac" { // Loại bỏ tham số hmac khỏi chuỗi truy vấn
-			continue
-		}
-		params = append(params, key+"="+query.Get(key))
-	}
-	queryString := strings.Join(params, "&")
-
-	// 2. Tính toán HMAC sử dụng SHA256 và API secret
-	h := hmac.New(sha256.New, []byte(shopifyApiSecret))
-
-	h.Write([]byte(queryString))
-	calculatedHMAC := hex.EncodeToString(h.Sum(nil))
-
-	// 3. So sánh HMAC đã tính toán với HMAC nhận được (chú ý đến so sánh an toàn về thời gian)
-	// Decode HMAC nhận được từ hex string
-	decodedReceivedHMAC, err := hex.DecodeString(receivedHMAC)
+	jsonData, err := json.Marshal(data) // MarshalIndent cho pretty JSON
 	if err != nil {
-		return false // Nếu HMAC nhận được không phải là hex hợp lệ, trả về false
+		log.Fatal(err)
 	}
-	decodedCalculatedHMAC, err := hex.DecodeString(calculatedHMAC)
-	if err != nil {
-		return false // Nếu HMAC tính toán được không phải là hex hợp lệ (về lý thuyết không xảy ra), trả về false
+	return string(jsonData)
+}
+
+func Decode(data string) interface{} {
+	var bodyJson map[string]interface{}
+	if err := json.Unmarshal([]byte(data), &bodyJson); err != nil {
+		log.Println("Error parsing JSON:", err)
+		return nil
 	}
 
-	// Sử dụng subtle.ConstantTimeCompare để so sánh an toàn về thời gian, tránh tấn công thời gian
-	if subtle.ConstantTimeCompare(decodedCalculatedHMAC, decodedReceivedHMAC) == 1 {
-		return true
-	}
-	return false
+	return bodyJson
+}
+
+func GetType(data interface{}) interface{} {
+	return reflect.TypeOf(data)
 }

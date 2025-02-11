@@ -5,7 +5,6 @@ import (
 	"demo/app/middleware"
 	"demo/app/repositories"
 	"demo/app/services"
-	"demo/app/utils"
 	"demo/database/mysql"
 
 	"github.com/gorilla/mux"
@@ -24,7 +23,7 @@ func SetupUserRoutes(router *mux.Router) *mux.Router {
 	// router.Handle("/profile", middleware.AuthMiddleware(http.HandlerFunc(userController.GetProfile))).Methods("GET")
 
 	// Route
-	router.HandleFunc(utils.RoutePath("user", ""), userController.GetAllUsers).Methods("GET")
+	router.HandleFunc("/user", userController.GetAllUsers).Methods("GET")
 
 	return router
 }

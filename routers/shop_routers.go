@@ -3,7 +3,6 @@ package routers
 import (
 	"demo/app/controllers"
 	"demo/app/services"
-	"demo/app/utils"
 
 	"github.com/gorilla/mux"
 )
@@ -20,7 +19,7 @@ func SetupShopRoutes(router *mux.Router) *mux.Router {
 	// router.Handle("/profile", middleware.AuthMiddleware(http.HandlerFunc(userController.GetProfile))).Methods("GET")
 
 	// Route
-	router.HandleFunc(utils.RoutePath("shop", ""), shopController.GetDetail).Methods("GET")
+	router.HandleFunc("/shop", shopController.GetDetail).Methods("GET")
 
 	return router
 }
