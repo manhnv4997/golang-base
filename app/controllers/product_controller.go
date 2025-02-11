@@ -37,8 +37,6 @@ func (productController *ProductController) List(response http.ResponseWriter, r
 func (productController *ProductController) Detail(response http.ResponseWriter, request *http.Request) {
 	product, err := services.NewProductService().Detail(response, request)
 
-	log.Print(product, "product")
-
 	if err != nil {
 		log.Println(err, "err")
 		http.Error(response, "Lỗi lấy dữ liệu", http.StatusInternalServerError)
@@ -56,8 +54,6 @@ func (productController *ProductController) Detail(response http.ResponseWriter,
 
 func (productController *ProductController) CountProduct(response http.ResponseWriter, request *http.Request) {
 	product, err := services.NewProductService().CountProduct(response, request)
-
-	log.Print(product, "product")
 
 	if err != nil {
 		log.Println(err, "err")
