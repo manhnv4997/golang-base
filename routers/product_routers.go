@@ -24,6 +24,7 @@ func SetupProductRoutes(router *mux.Router) *mux.Router {
 	router.HandleFunc("/product/count", productController.CountProduct).Methods("GET")
 	router.HandleFunc("/product/update", productController.Update).Methods("PUT")
 	router.HandleFunc("/product", productController.Delete).Methods("DELETE")
+	router.HandleFunc("/product", productController.Store).Methods("POST")
 
 	return router
 }

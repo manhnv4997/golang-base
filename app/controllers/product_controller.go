@@ -34,6 +34,24 @@ func (productController *ProductController) List(response http.ResponseWriter, r
 	}
 }
 
+func (productcontroller ProductController) Store(response http.ResponseWriter, request *http.Request) {
+	result, err := services.NewProductService().Store(response, request)
+
+	if err != nil {
+		log.Println(err, "err")
+		http.Error(response, "Lỗi lấy dữ liệu", http.StatusInternalServerError)
+		return
+	}
+
+	bodyJson := utils.Decode(string(result.Body()))
+	encodeErr := utils.SuccessResponse(response, http.StatusOK, bodyJson)
+
+	if encodeErr != nil {
+		utils.ErrorResponse(response, http.StatusInternalServerError, "Lỗi encode json response")
+		return
+	}
+}
+
 func (productController *ProductController) Detail(response http.ResponseWriter, request *http.Request) {
 	product, err := services.NewProductService().Detail(response, request)
 

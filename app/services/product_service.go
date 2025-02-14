@@ -3,6 +3,7 @@ package services
 import (
 	"demo/app/utils"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/go-resty/resty/v2"
@@ -76,6 +77,47 @@ func (productService *ProductService) Update(response http.ResponseWriter, reque
 
 	resp, err := utils.NewClient().Post(
 		utils.GraphQLEndpoint(bodyDataRequest["shop"].(string)),
+		utils.GraphQLRequest{Query: query},
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
+}
+
+func (productService *ProductService) Store(response http.ResponseWriter, request *http.Request) (*resty.Response, error) {
+	shop := utils.GetEnv("SHOP_NAME", "")
+	bodyDataRequest, err := utils.BodyDataRequest(response, request)
+
+	if err != nil {
+		return nil, err
+	}
+
+	log.Print(bodyDataRequest, "bodyDataRequest")
+
+	query := fmt.Sprintf(`
+		mutation {
+		productCreate(input: {
+			title: "%s",
+			descriptionHtml: "%s",
+			status: %s,
+		}) {
+			product {
+				id
+				title
+				status
+			}
+			userErrors {
+				field
+				message
+			}
+		}
+	}`, bodyDataRequest["title"], bodyDataRequest["descriptionHtml"], bodyDataRequest["status"])
+
+	resp, err := utils.NewClient().Post(
+		utils.GraphQLEndpoint(shop),
 		utils.GraphQLRequest{Query: query},
 	)
 
