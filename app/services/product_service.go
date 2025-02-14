@@ -3,7 +3,6 @@ package services
 import (
 	"demo/app/utils"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/go-resty/resty/v2"
@@ -16,7 +15,8 @@ func NewProductService() *ProductService {
 }
 
 func (productService *ProductService) List(response http.ResponseWriter, request *http.Request) (*resty.Response, error) {
-	shop := request.URL.Query().Get("shop")
+	shop := utils.GetEnv("SHOP_NAME", "")
+
 	resp, err := utils.NewClient().
 		Get(response,
 			fmt.Sprintf("https://%s.myshopify.com/admin/api/%s/products.json", shop, utils.GetEnv("SHOPIFY_DATE", "2025-01")),
@@ -26,7 +26,7 @@ func (productService *ProductService) List(response http.ResponseWriter, request
 }
 
 func (productService *ProductService) Detail(response http.ResponseWriter, request *http.Request) (*resty.Response, error) {
-	shop := request.URL.Query().Get("shop")
+	shop := utils.GetEnv("SHOP_NAME", "")
 	id := request.URL.Query().Get("product-id")
 
 	resp, err := utils.NewClient().
@@ -38,7 +38,7 @@ func (productService *ProductService) Detail(response http.ResponseWriter, reque
 }
 
 func (productService *ProductService) CountProduct(response http.ResponseWriter, request *http.Request) (*resty.Response, error) {
-	shop := request.URL.Query().Get("shop")
+	shop := utils.GetEnv("SHOP_NAME", "")
 
 	resp, err := utils.NewClient().
 		Get(response,
@@ -88,10 +88,7 @@ func (productService *ProductService) Update(response http.ResponseWriter, reque
 
 func (productService *ProductService) Delete(response http.ResponseWriter, request *http.Request) (*resty.Response, error) {
 	productId := request.URL.Query().Get("product_id")
-	shop := request.URL.Query().Get("shop")
-
-	log.Print(productId, "productId")
-	log.Print(shop, "shop")
+	shop := utils.GetEnv("SHOP_NAME", "")
 
 	query := fmt.Sprintf(`
 		mutation {

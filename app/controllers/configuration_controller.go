@@ -26,13 +26,6 @@ func NewConfigurationController(configurationService *services.ConfigurationServ
 }
 
 func (configurationController *ConfigurationController) AuthHandler(response http.ResponseWriter, request *http.Request) {
-	shop := request.URL.Query().Get("shop")
-	if shop == "" {
-		// http.Error(response, "Missing shop parameter", http.StatusBadRequest)
-		ErrorResponse(response, http.StatusBadRequest, "Missing shop parameter")
-		return
-	}
-
 	// https://7f39-14-191-163-181.ngrok-free.app/auth?shop=dungdinhnghe.myshopify.com
 	// https://dungdinhnghe.myshopify.com/admin/oauth/authorize?client_id=7611fb8cd65cee6430d670f19bf58c22&scope=read_orders,write_products&redirect_uri=https://a59a-14-160-24-42.ngrok-free.app/auth/callback
 	// https://dungdinhnghe.myshopify.com/admin/oauth/authorize?client_id=7611fb8cd65cee6430d670f19bf58c22&scope=read_orders,write_products&redirect_uri=https://a59a-14-160-24-42.ngrok-free.app/auth/callback&grant_options[]=per-user
@@ -40,7 +33,7 @@ func (configurationController *ConfigurationController) AuthHandler(response htt
 	// https://dungdinhnghe.myshopify.com/admin/api/2025-01/products.json?ids=632910392921728736
 
 	// Shopify OAuth URL
-	authURL := fmt.Sprintf("https://%s/admin/oauth/authorize?client_id=%s&scope=%s&redirect_uri=%s&state=%d", shop, shopifyAPIKey, shopifyScopes, shopifyRedirectURI, 123)
+	authURL := fmt.Sprintf("https://%s/admin/oauth/authorize?client_id=%s&scope=%s&redirect_uri=%s&state=%d", utils.GetEnv("SHOP_NAME", ""), shopifyAPIKey, shopifyScopes, shopifyRedirectURI, 123)
 
 	log.Println(authURL, "authURL")
 
@@ -48,11 +41,11 @@ func (configurationController *ConfigurationController) AuthHandler(response htt
 }
 
 func (configurationController *ConfigurationController) CallbackHandler(response http.ResponseWriter, request *http.Request) {
-	shop := request.URL.Query().Get("shop")
+	shop := utils.GetEnv("SHOP_NAME", "")
 	code := request.URL.Query().Get("code")
 	hmac := request.URL.Query().Get("hmac")
 
-	if shop == "" || code == "" {
+	if code == "" {
 		http.Error(response, "Invalid callback parameters", http.StatusBadRequest)
 		return
 	}
