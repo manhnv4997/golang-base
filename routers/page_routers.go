@@ -21,7 +21,7 @@ func SetupPageRoutes(router *mux.Router) *mux.Router {
 	// Route
 	router.HandleFunc("/page", pageController.Store).Methods("POST")
 	router.HandleFunc("/page", pageController.Update).Methods("PUT")
-	router.HandleFunc("/page", pageController.Update).Methods("DELETE")
+	router.HandleFunc("/page", pageController.Delete).Methods("DELETE")
 
 	return router
 }

@@ -116,7 +116,6 @@ func (pageService *PageService) Delete(response http.ResponseWriter, request *ht
 		{
 			deletedPageId
 			userErrors{
-				code
 				field
 				message
 			}
