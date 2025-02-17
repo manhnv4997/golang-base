@@ -105,7 +105,7 @@ func (productService *ProductService) Store(response http.ResponseWriter, reques
 				message
 			}
 		}
-	}`, bodyDataRequest["title"], bodyDataRequest["descriptionHtml"], bodyDataRequest["status"])
+	}`, bodyDataRequest["title"], bodyDataRequest["description_html"], bodyDataRequest["status"])
 
 	resp, err := utils.NewClient().Post(
 		utils.GraphQLEndpoint(utils.GetEnv("SHOP_NAME", "")),

@@ -42,7 +42,7 @@ func (pageService *PageService) Store(response http.ResponseWriter, request *htt
 			}
 		}
 	}
-	`, bodyDataRequest["title"], bodyDataRequest["bodyHtml"], bodyDataRequest["slug"])
+	`, bodyDataRequest["title"], bodyDataRequest["body_html"], bodyDataRequest["slug"])
 
 	resp, err := utils.NewClient().Post(
 		utils.GraphQLEndpoint(utils.GetEnv("SHOP_NAME", "")),
