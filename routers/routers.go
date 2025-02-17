@@ -17,6 +17,7 @@ func SetupRoutes() *mux.Router {
 	router = SetupUserRoutes(router)
 	router = SetupProductRoutes(router)
 	router = SetupCustomerRoutes(router)
+	router = SetupPageRoutes(router)
 
 	// Views
 	router = InitViewRoutes(router)

@@ -70,7 +70,7 @@ func (productService *ProductService) Update(response http.ResponseWriter, reque
 	}`, bodyDataRequest["product_id"], bodyDataRequest["title"])
 
 	resp, err := utils.NewClient().Post(
-		utils.GraphQLEndpoint(bodyDataRequest["shop"].(string)),
+		utils.GraphQLEndpoint(utils.GetEnv("SHOP_NAME", "")),
 		utils.GraphQLRequest{Query: query},
 	)
 
