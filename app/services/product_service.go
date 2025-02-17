@@ -3,7 +3,6 @@ package services
 import (
 	"demo/app/utils"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/go-resty/resty/v2"
@@ -16,34 +15,29 @@ func NewProductService() *ProductService {
 }
 
 func (productService *ProductService) List(response http.ResponseWriter, request *http.Request) (*resty.Response, error) {
-	shop := utils.GetEnv("SHOP_NAME", "")
-
 	resp, err := utils.NewClient().
 		Get(response,
-			fmt.Sprintf("https://%s.myshopify.com/admin/api/%s/products.json", shop, utils.GetEnv("SHOPIFY_DATE", "2025-01")),
+			fmt.Sprintf("https://%s.myshopify.com/admin/api/%s/products.json", utils.GetEnv("SHOP_NAME", ""), utils.GetEnv("SHOPIFY_DATE", "2025-01")),
 		)
 
 	return resp, err
 }
 
 func (productService *ProductService) Detail(response http.ResponseWriter, request *http.Request) (*resty.Response, error) {
-	shop := utils.GetEnv("SHOP_NAME", "")
 	id := request.URL.Query().Get("product-id")
 
 	resp, err := utils.NewClient().
 		Get(response,
-			fmt.Sprintf("https://%s.myshopify.com/admin/api/%s/products/%s.json", shop, utils.GetEnv("SHOPIFY_DATE", "2025-01"), id),
+			fmt.Sprintf("https://%s.myshopify.com/admin/api/%s/products/%s.json", utils.GetEnv("SHOP_NAME", ""), utils.GetEnv("SHOPIFY_DATE", "2025-01"), id),
 		)
 
 	return resp, err
 }
 
 func (productService *ProductService) CountProduct(response http.ResponseWriter, request *http.Request) (*resty.Response, error) {
-	shop := utils.GetEnv("SHOP_NAME", "")
-
 	resp, err := utils.NewClient().
 		Get(response,
-			fmt.Sprintf("https://%s.myshopify.com/admin/api/%s/products/count.json", shop, utils.GetEnv("SHOPIFY_DATE", "2025-01")),
+			fmt.Sprintf("https://%s.myshopify.com/admin/api/%s/products/count.json", utils.GetEnv("SHOP_NAME", ""), utils.GetEnv("SHOPIFY_DATE", "2025-01")),
 		)
 
 	return resp, err
@@ -88,14 +82,11 @@ func (productService *ProductService) Update(response http.ResponseWriter, reque
 }
 
 func (productService *ProductService) Store(response http.ResponseWriter, request *http.Request) (*resty.Response, error) {
-	shop := utils.GetEnv("SHOP_NAME", "")
 	bodyDataRequest, err := utils.BodyDataRequest(response, request)
 
 	if err != nil {
 		return nil, err
 	}
-
-	log.Print(bodyDataRequest, "bodyDataRequest")
 
 	query := fmt.Sprintf(`
 		mutation {
@@ -117,7 +108,7 @@ func (productService *ProductService) Store(response http.ResponseWriter, reques
 	}`, bodyDataRequest["title"], bodyDataRequest["descriptionHtml"], bodyDataRequest["status"])
 
 	resp, err := utils.NewClient().Post(
-		utils.GraphQLEndpoint(shop),
+		utils.GraphQLEndpoint(utils.GetEnv("SHOP_NAME", "")),
 		utils.GraphQLRequest{Query: query},
 	)
 
@@ -130,7 +121,6 @@ func (productService *ProductService) Store(response http.ResponseWriter, reques
 
 func (productService *ProductService) Delete(response http.ResponseWriter, request *http.Request) (*resty.Response, error) {
 	productId := request.URL.Query().Get("product_id")
-	shop := utils.GetEnv("SHOP_NAME", "")
 
 	query := fmt.Sprintf(`
 		mutation {
@@ -144,7 +134,7 @@ func (productService *ProductService) Delete(response http.ResponseWriter, reque
 		}`, fmt.Sprintf("gid://shopify/Product/%s", productId))
 
 	resp, err := utils.NewClient().Post(
-		utils.GraphQLEndpoint(shop),
+		utils.GraphQLEndpoint(utils.GetEnv("SHOP_NAME", "")),
 		utils.GraphQLRequest{Query: query},
 	)
 

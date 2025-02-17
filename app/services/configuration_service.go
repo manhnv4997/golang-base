@@ -28,7 +28,7 @@ func (configurationService *ConfigurationService) Handle() (interface{}, error) 
 
 func (configurationService *ConfigurationService) GetAccessToken(shop string, code string) (string, error) {
 	response, err := client.Post(
-		fmt.Sprintf("https://%s/admin/oauth/access_token?client_id=%s&client_secret=%s&code=%s", shop, shopifyAPIKey, shopifyApiSecret, code),
+		fmt.Sprintf("https://%s.myshopify.com/admin/oauth/access_token?client_id=%s&client_secret=%s&code=%s", shop, shopifyAPIKey, shopifyApiSecret, code),
 		map[string]string{
 			"client_id":     shopifyAPIKey,
 			"client_secret": shopifyApiSecret,

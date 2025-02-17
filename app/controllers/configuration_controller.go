@@ -33,7 +33,7 @@ func (configurationController *ConfigurationController) AuthHandler(response htt
 	// https://dungdinhnghe.myshopify.com/admin/api/2025-01/products.json?ids=632910392921728736
 
 	// Shopify OAuth URL
-	authURL := fmt.Sprintf("https://%s/admin/oauth/authorize?client_id=%s&scope=%s&redirect_uri=%s&state=%d", utils.GetEnv("SHOP_NAME", ""), shopifyAPIKey, shopifyScopes, shopifyRedirectURI, 123)
+	authURL := fmt.Sprintf("https://%s.myshopify.com/admin/oauth/authorize?client_id=%s&scope=%s&redirect_uri=%s&state=%d", utils.GetEnv("SHOP_NAME", ""), shopifyAPIKey, shopifyScopes, shopifyRedirectURI, 123)
 
 	log.Println(authURL, "authURL")
 

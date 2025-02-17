@@ -16,9 +16,10 @@ func SetupRoutes() *mux.Router {
 	router = SetupShopRoutes(router)
 	router = SetupUserRoutes(router)
 	router = SetupProductRoutes(router)
+	router = SetupCustomerRoutes(router)
 
 	// Views
-	router = SetupViewRoutes(router)
+	router = InitViewRoutes(router)
 
 	// In ra danh sách các routes
 	utils.PrintRoutes(router)

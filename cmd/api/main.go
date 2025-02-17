@@ -24,7 +24,7 @@ func main() {
 	router := routers.SetupRoutes()
 
 	// Views
-	router = routers.SetupViewRoutes(router)
+	router = routers.InitViewRoutes(router)
 
 	// Handle CORS
 	handlerRouter := SetupCORS(router)

@@ -7,7 +7,7 @@ import (
 )
 
 // func (r *Routers) SetupUserRoutes(router *mux.Router) *mux.Router {   // cách tạo instance
-func SetupViewRoutes(router *mux.Router) *mux.Router {
+func InitViewRoutes(router *mux.Router) *mux.Router {
 
 	// Serve file tĩnh từ thư mục /view/public
 	fs := http.FileServer(http.Dir("./view/public"))
