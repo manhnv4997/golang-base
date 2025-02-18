@@ -25,7 +25,10 @@ func SuccessResponse(response http.ResponseWriter, code int, data interface{}) e
 	})
 
 	if encodeErr != nil {
-		return encodeErr
+		return json.NewEncoder(response).Encode(map[string]interface{}{
+			"message": "Có lỗi xảy ra!",
+			"result":  data,
+		})
 	}
 
 	return nil
