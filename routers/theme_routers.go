@@ -22,7 +22,8 @@ func SetupThemeRoutes(router *mux.Router) *mux.Router {
 	router.HandleFunc("/theme", themeController.Store).Methods("POST")
 	router.HandleFunc("/theme", themeController.Update).Methods("PUT")
 	router.HandleFunc("/theme", themeController.Delete).Methods("DELETE")
-	// router.HandleFunc("/theme/publish", themeController.Delete).Methods("POST")
+	router.HandleFunc("/theme/publish", themeController.Publish).Methods("POST")
+	// router.HandleFunc("/update-theme", themeController.UpdateTheme).Methods("POST")
 
 	return router
 }

@@ -165,49 +165,70 @@ func (themeService *ThemeService) Delete(response http.ResponseWriter, request *
 	return resp, nil
 }
 
+type ThemePublishResponse struct {
+	Data struct {
+		ThemePublish struct {
+			Theme struct {
+				ID string `json:"id"`
+			} `json:"theme"`
+			UserErrors []struct {
+				Field   []string `json:"field"`
+				Message string   `json:"message"`
+			} `json:"userErrors"`
+		} `json:"themePublish"`
+	} `json:"data"`
+}
+
 func (themeService *ThemeService) Publish(response http.ResponseWriter, request *http.Request) (*resty.Response, error) {
 	bodyDataRequest, err := utils.BodyDataRequest(response, request)
 
 	if err != nil {
 		return nil, err
 	}
-
-	query := `
-		mutation themePublish($id: ID!) {
-			themePublish(id: $id) {
-				theme {
-					id
-					name
-				}
-				userErrors {
-					field
-					message
-				}
-			}
-		}
-	`
+	mutation := `
+    mutation themePublish($id: ID!) {
+        themePublish(id: $id) {
+            theme {
+                id
+            }
+            userErrors {
+                field
+                message
+            }
+        }
+    }
+    `
 
 	variables := map[string]interface{}{
-		"id": fmt.Sprintf("gid://shopify/OnlineStoreTheme/%s", bodyDataRequest["id"]),
+		"id": fmt.Sprintf("gid://shopify/Theme/%s", bodyDataRequest["id"]),
 	}
 
-	// Gửi yêu cầu POST
+	payload := map[string]interface{}{
+		"query":     mutation,
+		"variables": variables,
+	}
+
 	resp, err := utils.NewClient().Post(
 		utils.GraphQLEndpoint(utils.GetEnv("SHOP_NAME", "")),
-		map[string]interface{}{
-			"query":     query,
-			"variables": variables,
-		},
+		payload,
 	)
 
-	// Kiểm tra lỗi
+	// Xử lý lỗi
 	if err != nil {
-		fmt.Println(err)
-		return nil, err
+		log.Fatalf("Request failed: %v", err)
 	}
 
-	// In ra kết quả thành công
-	fmt.Println("Response from Shopify API:", resp.String())
+	// In kết quả phản hồi
+	fmt.Println("Response Status:", resp.Status())
+	fmt.Println("Response Body:", resp.String())
 
 	return resp, err
+}
+
+func (themeService *ThemeService) UpdateTheme(response http.ResponseWriter, request http.Request) {
+	// tạo theme
+
+	// đặt theme vừa tạo làm mặc định
+
+	// nhúng html
 }
